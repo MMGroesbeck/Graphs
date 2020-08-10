@@ -22,19 +22,17 @@ my_graph.add_edge(3, 5)
 my_graph.add_edge(2, 3)
 my_graph.add_edge(4, 6)
 
-dfs_deque = deque()
-dfs_deque.append([1])
-while dfs_deque[0] is not [None]:
-    print("Deque: ", dfs_deque)
-    this_path = dfs_deque.pop()
-    print("Popped: ", this_path)
-    print("New deque: ", dfs_deque)
-    if this_path[-1] == 6:
-        print("Done")
-        break
-    else:
-        for n in my_graph.get_neighbors(this_path[-1]):
-            print("Neighbor: ", n)
-            if n not in this_path:
-                dfs_deque.append(this_path[:].extend([n]))
-                print("New: ", dfs_deque)
+def dfs_recursive(starting_vertex, destination_vertex, path=[]):
+    path.append(starting_vertex)
+    if starting_vertex == destination_vertex:
+        return path
+    for n in my_graph.get_neighbors(starting_vertex):
+        if n not in path:
+            dfs_recursive(n, destination_vertex, path)
+            if path[-1] == destination_vertex:
+                return path
+            else:
+                path.pop()
+
+c = dfs_recursive(1, 4)
+print(c)

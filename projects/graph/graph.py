@@ -88,7 +88,6 @@ class Graph:
         bfs_deque = deque([[set([starting_vertex]),[starting_vertex]]])
         while len(bfs_deque) > 0:
             this_state = bfs_deque.popleft()
-            print(this_state)
             if this_state[1][-1] == destination_vertex:
                 paths.append(this_state[1])
             else:
@@ -121,7 +120,7 @@ class Graph:
                         new_state[1].append(n)
                         dfs_deque.append(new_state)
 
-    def dfs_recursive(self, starting_vertex, destination_vertex, vis=False):
+    def dfs_recursive(self, starting_vertex, destination_vertex, path=[]):
         """
         Return a list containing a path from
         starting_vertex to destination_vertex in
@@ -129,20 +128,16 @@ class Graph:
 
         This should be done using recursion.
         """
-        if not vis:
-            vis = set()
-        if starting_vertex in vis:
-            return None
-        elif starting_vertex == destination_vertex:
-            return [starting_vertex]
-        else:
-            vis.add(starting_vertex)
-            for n in self.get_neighbors(starting_vertex):
-                c = self.dfs_recursive(n, destination_vertex, vis)
-                if c:
-                    return [starting_vertex].extend(c)
+        path.append(starting_vertex)
+        if starting_vertex == destination_vertex:
+            return path
+        for n in self.get_neighbors(starting_vertex):
+            if n not in path:
+                self.dfs_recursive(n, destination_vertex, path)
+                if path[-1] == destination_vertex:
+                    return path
                 else:
-                    return None
+                    path.pop()
 
 if __name__ == '__main__':
     graph = Graph()  # Instantiate your graph
