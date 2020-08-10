@@ -108,9 +108,20 @@ class Graph:
         starting_vertex to destination_vertex in
         depth-first order.
         """
-        pass  # TODO
+        dfs_deque = deque([[set([starting_vertex]), [starting_vertex]]])
+        while len(dfs_deque) > 0:
+            this_state = dfs_deque.pop()
+            if this_state[1][-1] == destination_vertex:
+                return this_state[1]
+            else:
+                for n in self.get_neighbors(this_state[1][-1]):
+                    if n not in this_state[0]:
+                        new_state = copy.deepcopy(this_state)
+                        new_state[0].add(n)
+                        new_state[1].append(n)
+                        dfs_deque.append(new_state)
 
-    def dfs_recursive(self, starting_vertex, destination_vertex):
+    def dfs_recursive(self, starting_vertex, destination_vertex, vis=False):
         """
         Return a list containing a path from
         starting_vertex to destination_vertex in
@@ -118,7 +129,20 @@ class Graph:
 
         This should be done using recursion.
         """
-        pass  # TODO
+        if not vis:
+            vis = set()
+        if starting_vertex in vis:
+            return None
+        elif starting_vertex == destination_vertex:
+            return [starting_vertex]
+        else:
+            vis.add(starting_vertex)
+            for n in self.get_neighbors(starting_vertex):
+                c = self.dfs_recursive(n, destination_vertex, vis)
+                if c:
+                    return [starting_vertex].extend(c)
+                else:
+                    return None
 
 if __name__ == '__main__':
     graph = Graph()  # Instantiate your graph
