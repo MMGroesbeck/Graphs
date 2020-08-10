@@ -1,6 +1,7 @@
 """
 Simple graph implementation
 """
+import copy
 from collections import deque
 
 class Graph:
@@ -39,7 +40,8 @@ class Graph:
             if this_vert not in visited:
                 visited.add(this_vert)
                 for n in self.get_neighbors(this_vert):
-                    bft_deque.append(n)
+                    if n not in visited:
+                        bft_deque.append(n)
                 print(this_vert)
 
     def dft(self, starting_vertex):
@@ -82,7 +84,23 @@ class Graph:
         starting_vertex to destination_vertex in
         breath-first order.
         """
-        pass  # TODO
+        paths = []
+        bfs_deque = deque([[set([starting_vertex]),[starting_vertex]]])
+        while len(bfs_deque) > 0:
+            this_state = bfs_deque.popleft()
+            print(this_state)
+            if this_state[1][-1] == destination_vertex:
+                paths.append(this_state[1])
+            else:
+                for n in self.get_neighbors(this_state[1][-1]):
+                    if n not in this_state[0]:
+                        new_state = copy.deepcopy(this_state)
+                        new_state[0].add(n)
+                        new_state[1].append(n)
+                        bfs_deque.append(new_state)
+        if len(paths) > 0:
+            paths.sort(key=len)
+            return paths[0]
 
     def dfs(self, starting_vertex, destination_vertex):
         """
