@@ -1,7 +1,7 @@
 """
 Simple graph implementation
 """
-from util import Stack, Queue  # These may come in handy
+from collections import deque
 
 class Graph:
 
@@ -13,33 +13,53 @@ class Graph:
         """
         Add a vertex to the graph.
         """
-        pass  # TODO
+        self.vertices[vertex_id] = set()
 
     def add_edge(self, v1, v2):
         """
         Add a directed edge to the graph.
         """
-        pass  # TODO
+        self.vertices[v1].add(v2)
 
     def get_neighbors(self, vertex_id):
         """
         Get all neighbors (edges) of a vertex.
         """
-        pass  # TODO
+        return [edge for edge in self.vertices[vertex_id]]
 
     def bft(self, starting_vertex):
         """
         Print each vertex in breadth-first order
         beginning from starting_vertex.
         """
-        pass  # TODO
+        bft_deque = deque([starting_vertex])
+        visited = set()
+        while len(bft_deque) > 0:
+            this_vert = bft_deque.popleft()
+            if this_vert not in visited:
+                visited.add(this_vert)
+                for n in self.get_neighbors(this_vert):
+                    bft_deque.append(n)
+                print(this_vert)
 
     def dft(self, starting_vertex):
         """
         Print each vertex in depth-first order
         beginning from starting_vertex.
         """
-        pass  # TODO
+        dft_deque = deque([starting_vertex])
+        visited = []
+        visited_set = set()
+        while len(dft_deque) > 0:
+            this_vert = dft_deque.pop()
+            if this_vert not in visited_set:
+                visited.append(this_vert)
+                visited_set.add(this_vert)
+                for n in self.get_neighbors(this_vert):
+                    if n not in visited_set:
+                        dft_deque.append(n)
+        for v in visited:
+            print(v)
 
     def dft_recursive(self, starting_vertex):
         """
