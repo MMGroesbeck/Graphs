@@ -26,7 +26,7 @@ class Graph:
         """
         Get all neighbors (edges) of a vertex.
         """
-        return [edge for edge in self.vertices[vertex_id]]
+        return list(self.vertices[vertex_id])
 
     def bft(self, starting_vertex):
         """
