@@ -15,7 +15,9 @@ def earliest_ancestor(ancestors, starting_node):
         return [parent for parent in vertices[node]]
     if len(get_parents(starting_node)) == 0:
         return -1
-    def trace_back(node, steps=0, candidates=[]):
+    def trace_back(node, steps=0, candidates=None):
+        if candidates == None:
+            candidates = []
         parents = get_parents(node)
         if len(parents) == 0:
             return candidates.append((node, steps))
