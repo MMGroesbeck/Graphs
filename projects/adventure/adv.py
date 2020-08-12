@@ -29,7 +29,27 @@ player = Player(world.starting_room)
 # traversal_path = ['n', 'n']
 traversal_path = []
 
+# Version 1: traveling blind
+# Algorithm refers only to rooms adjacent to known rooms
+# Keep dict or set (x) of known rooms with unknown adjacent rooms
+# Start facing north
+# While not all rooms discovered:
+## If unknown room ahead:
+### Step forward
+### Add current room to known graph
+### Turn left
+## Else:
+### turn right until unknown room ahead or have turned 4 times
+### If no adjacent unknown rooms:
+#### Follow shortest path to a room in dict/set (x)
+# Additional details:
+## Keep track of coordinates relative to starting point:
+### If adjacent rooms with a connection have been visited, fill in connections
+## room.x and room.y are coordinates
+### going east increases x, going north increases y
+### so keep a dict of rooms by (x,y)
 
+# Version 2: use your map
 
 # TRAVERSAL TEST
 visited_rooms = set()
@@ -40,23 +60,23 @@ for move in traversal_path:
     player.travel(move)
     visited_rooms.add(player.current_room)
 
-if len(visited_rooms) == len(room_graph):
-    print(f"TESTS PASSED: {len(traversal_path)} moves, {len(visited_rooms)} rooms visited")
-else:
-    print("TESTS FAILED: INCOMPLETE TRAVERSAL")
-    print(f"{len(room_graph) - len(visited_rooms)} unvisited rooms")
+# if len(visited_rooms) == len(room_graph):
+#     print(f"TESTS PASSED: {len(traversal_path)} moves, {len(visited_rooms)} rooms visited")
+# else:
+#     print("TESTS FAILED: INCOMPLETE TRAVERSAL")
+#     print(f"{len(room_graph) - len(visited_rooms)} unvisited rooms")
 
 
 
 #######
 # UNCOMMENT TO WALK AROUND
 #######
-player.current_room.print_room_description(player)
-while True:
-    cmds = input("-> ").lower().split(" ")
-    if cmds[0] in ["n", "s", "e", "w"]:
-        player.travel(cmds[0], True)
-    elif cmds[0] == "q":
-        break
-    else:
-        print("I did not understand that command.")
+# player.current_room.print_room_description(player)
+# while True:
+#     cmds = input("-> ").lower().split(" ")
+#     if cmds[0] in ["n", "s", "e", "w"]:
+#         player.travel(cmds[0], True)
+#     elif cmds[0] == "q":
+#         break
+#     else:
+#         print("I did not understand that command.")

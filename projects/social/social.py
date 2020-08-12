@@ -59,7 +59,7 @@ class SocialGraph:
         total_friendships = (num_users * avg_friendships)//2
         random_friendships = random.sample(possibles, total_friendships)
         for link in random_friendships:
-            self.add_friendship(link[0], link[1])
+            self.add_friendship(*link)
 
     def get_all_social_paths(self, user_id):
         """
