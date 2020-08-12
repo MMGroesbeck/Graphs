@@ -50,6 +50,12 @@ traversal_path = []
 ### so keep a dict of rooms by (x,y)
 
 # Version 2: use your map
+# Keep dict/set (x) of rooms with unvisited adjacents
+## True if visited *or no room*, False if unvisited
+# Follow step-and-turn as above
+## At each step, update (x) as well as visited set and path
+# If no adjacent unvisited rooms, use world object graph
+## Find shortest path to an unvisited room
 
 # TRAVERSAL TEST
 visited_rooms = set()

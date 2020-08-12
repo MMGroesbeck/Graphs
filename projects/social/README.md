@@ -56,7 +56,7 @@ Consider a sequence a(i) where term i is the number of users with a minimum netw
 
 Since only the initial user is within 0 steps, a(0) = 1. The expected value for a(1) is k := the average number of friends (here 5). After a(1), a(i+1) will be (k - expected number of existing connections)a(i) * the percentage of users not already in the network; that is, a(i+1) = (4-[(sum(a(j)|j<=i)) / 1000])a(i) [1 - (sum(a(j)|j<=i)) / 1000]
 
-That rough estimate doesn't converge, but indicates that *all* other users are likely in any given user's network and within 6 degrees. (Most look to be within 5.)
+That rough estimate doesn't converge, and it doesn't account for independent connected components; some of those are likely to emerge before everyone's connected.
 
 ## 4. Stretch Goal
 
