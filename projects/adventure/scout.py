@@ -41,6 +41,7 @@ class Scout:
             self.room = self.room.get_room_in_direction(direction)
             self.visited.add(self.room.id)
     def branch_eval(self, room):
+        # Returns number of contiguous unvisited rooms starting from room parameter
         checked = set([room.id])
         branch_deque = deque([room.id])
         while len(branch_deque) > 0:
@@ -54,17 +55,22 @@ class Scout:
                     branch_deque.append(new_room_id)
         return len(checked)
     def automap(self):
-        step_tens = 1
+        # Continue while an adjacent unvisited room is available:
         while self.check_new_adjacent():
+            # Scout chirality represents preferred direction
+            # (relative to direction of room entrance)
             if self.lefty:
                 self.turn_left()
             else:
                 self.turn_right()
+            # At intersections, choosing shortest branch reduces backtracking:
+            # Evaluate how many contiguous unvisited squares are accessible in each direction:
             branches = {i: None for i in self.compass}
             for d in self.room.get_exits():
                 if self.room.get_room_in_direction(d).id not in self.visited:
                     branches[d] = self.branch_eval(self.room.get_room_in_direction(d))
             shortest = self.compass[self.facing]
+            # Choice among available moves with equal branch size is based on chirality:
             if self.lefty:
                 turns = [0,1,2]
             else:
@@ -76,6 +82,7 @@ class Scout:
                         shortest = face
                 elif branches[shortest] == None:
                     shortest = face
+            # Move in direction of shortest branch
             self.facing = self.compass.index(shortest)
             self.step_forward()
     def nearest_new(self):
@@ -99,47 +106,9 @@ class Scout:
                         room_deque.append(new_state)
         return []
     def go_to_new(self):
+        # Gets list of directions to nearest unvisited room:
         for step in self.nearest_new():
+            # Follow those directions (not changing facing direction)
             self.move_direction(step)
+        # Update facing to reflect most recent move
         facing = self.compass.index(self.steps[-1])
-# End Scout object declaration
-
-# Shortest route between rooms, not restricted to already-mapped:
-def get_route(world, orig, dest):
-    # world is world object, orig and dest are ROOM ID NUMBERS
-    checked = set()
-    # each deque item is a list of [room_id, [path to room_id]]
-    room_deque = deque([[orig, []]])
-    while (len(room_deque) > 0):
-        this_state = room_deque.popleft()
-        if this_state[0] == dest:
-            return this_state[1]
-        else:
-            room = world.rooms[this_state[0]]
-            checked.add(room)
-            for exit in room.get_exits():
-                if room.get_room_in_direction(exit) not in checked:
-                    new_state = copy.deepcopy(this_state)
-                    new_state[0] = room.get_room_in_direction(exit).id
-                    new_state[1].append(exit)
-                    room_deque.append(new_state)
-    return None
-
-# Shortest route to nearest unvisited room from given origin:
-def go_to_new(world, orig, visited):
-    checked = set()
-    room_deque = deque([[orig, []]])
-    while (len(room_deque) > 0):
-        this_state = room_deque.popleft()
-        if this_state[0] not in visited:
-            return this_state[1]
-        else:
-            room = world.rooms[this_state[0]]
-            checked.add(room)
-            for exit in room.get_exits():
-                if room.get_room_in_direction(exit) not in checked:
-                    new_state = copy.deepcopy(this_state)
-                    new_state[0] = room.get_room_in_direction(exit).id
-                    new_state[1].append(exit)
-                    room_deque.append(new_state)
-    return None
