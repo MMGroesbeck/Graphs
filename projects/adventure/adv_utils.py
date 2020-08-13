@@ -80,7 +80,8 @@ class Scout:
             self.step_forward()
     def nearest_new(self):
         # Returns path to nearest unvisited room
-        # TODO: Returns path to nearest visited room with adjacent unvisited room
+        # Returning path to nearest room with unvisited neighbors increased steps
+        # ...but that may be due to the specifics of this map.
         checked = set()
         room_deque = deque([[self.room.id, []]])
         while (len(room_deque) > 0):
