@@ -5,7 +5,7 @@ from ast import literal_eval
 
 world = World()
 
-map_file = "maps/main_maze.txt"
+map_file = "maps/test_loop_fork.txt"
 room_graph=literal_eval(open(map_file, "r").read())
 world.load_graph(room_graph)
 
@@ -13,4 +13,4 @@ world.load_graph(room_graph)
 # print("v: ", scout.visited)
 # print(scout.room)
 
-print(get_route(world, 486, 220))
+world.print_rooms()

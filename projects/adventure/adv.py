@@ -3,6 +3,7 @@ from player import Player
 from world import World
 from adv_utils import Scout
 
+import datetime
 import random
 from ast import literal_eval
 
@@ -31,6 +32,8 @@ player = Player(world.starting_room)
 
 traversal_path = []
 
+print(datetime.datetime.now())
+
 scouts = [Scout(world.starting_room, world, i) for i in (True, False)]
 for scout in scouts:
     while len(scout.visited) < len(room_graph):
@@ -42,6 +45,8 @@ print("L: ", len(scouts[0].steps))
 print("R: ", len(scouts[1].steps))
 traversals = sorted([scout.steps for scout in scouts], key=lambda traversal: len(traversal))
 traversal_path = traversals[0]
+
+print(datetime.datetime.now())
 
 # TRAVERSAL TEST
 visited_rooms = set()

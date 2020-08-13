@@ -19,10 +19,12 @@ class Scout:
         self.facing = (self.facing - 1) % 4
     def turn_right(self):
         self.facing = (self.facing + 1) % 4
-    def check_new_adjacent(self):
+    def check_new_adjacent(self, room=None):
         # Returns True if any adjacent rooms have not been visited
+        if room == None:
+            room = self.room
         for exit in self.room.get_exits():
-            if self.room.get_room_in_direction(exit).id not in self.visited:
+            if room.get_room_in_direction(exit).id not in self.visited:
                 return True
         return False
     def step_forward(self):
@@ -58,37 +60,27 @@ class Scout:
                 self.turn_left()
             else:
                 self.turn_right()
-            # while self.compass[self.facing] not in self.room.get_exits():
-            #     if self.lefty:
-            #         self.turn_right()
-            #     else:
-            #         self.turn_left()
-            # self.step_forward()
-            branches = {}
-            for exit in self.room.get_exits():
-                print(f"R: {self.room.id}, e: {exit}")
-                branches[exit] = self.branch_eval(self.room.get_room_in_direction(exit))
-            print(branches)
+            branches = {i: None for i in self.compass}
+            for d in self.room.get_exits():
+                if self.room.get_room_in_direction(d).id not in self.visited:
+                    branches[d] = self.branch_eval(self.room.get_room_in_direction(d))
+            shortest = self.compass[self.facing]
             if self.lefty:
-                rel_dir = [0,1,2]
+                turns = [0,1,2]
             else:
-                rel_dir = [0,-1,-2]
-            shortest = None
-            for d in rel_dir:
-                this_dir = self.compass[(self.facing + d) % 4]
-                print(f"t_d: {this_dir}, s.f: {(self.facing + d) % 4}")
-                print(f"Sh: {shortest}")
-                if this_dir in branches:
-                    print("In branches")
-                    if shortest is not None:
-                        if branches[this_dir] < branches[shortest]:
-                            shortest = this_dir
-                    else:
-                        shortest = this_dir
+                turns = [0,-1,-2]
+            for turn in turns:
+                face = self.compass[(self.facing + turn) % 4]
+                if branches[shortest] is not None and branches[face] is not None:
+                    if branches[face] < branches[shortest]:
+                        shortest = face
+                elif branches[shortest] == None:
+                    shortest = face
             self.facing = self.compass.index(shortest)
-            self.step_forward
+            self.step_forward()
     def nearest_new(self):
         # Returns path to nearest unvisited room
+        # TODO: Returns path to nearest visited room with adjacent unvisited room
         checked = set()
         room_deque = deque([[self.room.id, []]])
         while (len(room_deque) > 0):
