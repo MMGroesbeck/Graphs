@@ -22,7 +22,7 @@ room_graph=literal_eval(open(map_file, "r").read())
 world.load_graph(room_graph)
 
 # Print an ASCII map
-world.print_rooms()
+# world.print_rooms()
 
 player = Player(world.starting_room)
 
@@ -57,7 +57,11 @@ player = Player(world.starting_room)
 # If no adjacent unvisited rooms, use world object graph
 ## Find shortest path to an unvisited room
 traversal_path = []
-
+scout = Scout(world.starting_room, world)
+while len(scout.visited) < len(room_graph):
+    scout.automap()
+    scout.go_to_new()
+traversal_path = scout.steps
 
 # TRAVERSAL TEST
 visited_rooms = set()
@@ -68,11 +72,11 @@ for move in traversal_path:
     player.travel(move)
     visited_rooms.add(player.current_room)
 
-# if len(visited_rooms) == len(room_graph):
-#     print(f"TESTS PASSED: {len(traversal_path)} moves, {len(visited_rooms)} rooms visited")
-# else:
-#     print("TESTS FAILED: INCOMPLETE TRAVERSAL")
-#     print(f"{len(room_graph) - len(visited_rooms)} unvisited rooms")
+if len(visited_rooms) == len(room_graph):
+    print(f"TESTS PASSED: {len(traversal_path)} moves, {len(visited_rooms)} rooms visited")
+else:
+    print("TESTS FAILED: INCOMPLETE TRAVERSAL")
+    print(f"{len(room_graph) - len(visited_rooms)} unvisited rooms")
 
 
 
