@@ -6,6 +6,7 @@ social_graph = SocialGraph()
 
 a = datetime.datetime.now()
 social_graph.populate_graph(10000,50)
+# social_graph.populate_graph(100,5)
 
 b = datetime.datetime.now()
 

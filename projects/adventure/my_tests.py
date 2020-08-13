@@ -9,9 +9,8 @@ map_file = "maps/main_maze.txt"
 room_graph=literal_eval(open(map_file, "r").read())
 world.load_graph(room_graph)
 
-scout = Scout(world.starting_room)
-print("v: ", scout.visited)
-print("m: ", scout.mapped)
-print(scout.room)
+# scout = Scout(world.starting_room)
+# print("v: ", scout.visited)
+# print(scout.room)
 
-# print(get_route(world, 486, 220))
+print(get_route(world, 486, 220))

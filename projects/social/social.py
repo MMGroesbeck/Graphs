@@ -55,12 +55,14 @@ class SocialGraph:
             self.add_user("".join(random.sample(letters, 8)))
 
         # Create friendships
-        possibles = [(i+1,j+1) for i in range(num_users) for j in range(num_users) if j > i]
         total_friendships = (num_users * avg_friendships)//2
-        random_friendships = random.sample(possibles, total_friendships)
-        for link in random_friendships:
-            self.add_friendship(*link)
-
+        user_ids = [i for i in range(1,num_users + 1)]
+        links = [random.choice(user_ids) for i in range(total_friendships)]
+        for link in links:
+            j = random.choice(user_ids)
+            while j == link or j in self.friendships[link]:
+                j = random.choice(user_ids)
+            self.add_friendship(link, j)
     def get_all_social_paths(self, user_id):
         """
         Takes a user's user_id as an argument

@@ -24,23 +24,30 @@ class Scout:
 
 # Shortest route between rooms, not restricted to already-mapped:
 def get_route(world, orig, dest):
-    # world is world object, orig and dest are room id numbers
+    # world is world object, orig and dest are ROOM ID NUMBERS
     checked = set()
     # each deque item is a list of [room_id, [path to room_id]]
-    room_deque = deque([[orig, [orig]]])
+    room_deque = deque([[orig, []]])
     while (len(room_deque) > 0):
         this_state = room_deque.popleft()
-        room = this_state[0]
-        if room == dest:
-            return this_state[1][1:]
+        if this_state[0] == dest:
+            return this_state[1]
         else:
+            room = world.rooms[this_state[0]]
             checked.add(room)
-            routes = [world.rooms[room].n_to, world.rooms[room].e_to, world.rooms[room].s_to, world.rooms[room].w_to]
-            for d in routes:
-                if d is not None:
-                    if d.id not in checked:
-                        new_state = copy.deepcopy(this_state)
-                        new_state[0] = d.id
-                        new_state[1].append(d.id)
-                        room_deque.append(new_state)
+            for exit in room.get_exits():
+                if room.get_room_in_direction(exit) not in checked:
+                    new_state = copy.deepcopy(this_state)
+                    new_state[0] = room.get_room_in_direction(exit).id
+                    new_state[1].append(exit)
+                    room_deque.append(new_state)
+
+            # routes = [world.rooms[room].n_to, world.rooms[room].e_to, world.rooms[room].s_to, world.rooms[room].w_to]
+            # for d in routes:
+            #     if d is not None:
+            #         if d.id not in checked:
+            #             new_state = copy.deepcopy(this_state)
+            #             new_state[0] = d.id
+            #             new_state[1].append(d.id)
+            #             room_deque.append(new_state)
     return None
