@@ -65,22 +65,22 @@ class Scout:
             #         self.turn_left()
             # self.step_forward()
             branches = {}
-            shortest = None
             for exit in self.room.get_exits():
                 print(f"R: {self.room.id}, e: {exit}")
                 branches[exit] = self.branch_eval(self.room.get_room_in_direction(exit))
+            print(branches)
             if self.lefty:
                 rel_dir = [0,1,2]
             else:
                 rel_dir = [0,-1,-2]
+            shortest = None
             for d in rel_dir:
                 this_dir = self.compass[(self.facing + d) % 4]
                 print(f"t_d: {this_dir}, s.f: {(self.facing + d) % 4}")
-                print(f"Br: {branches}")
                 print(f"Sh: {shortest}")
                 if this_dir in branches:
                     print("In branches")
-                    if shortest:
+                    if shortest is not None:
                         if branches[this_dir] < branches[shortest]:
                             shortest = this_dir
                     else:
