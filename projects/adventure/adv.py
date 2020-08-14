@@ -35,7 +35,10 @@ traversal_path = []
 # print(datetime.datetime.now())
 print(datetime.datetime.now())
 compasses = itertools.permutations(["n", "e", "s", "w"])
-scouts = [Scout(world.starting_room, world, i, list(j)) for i in (True, False) for j in compasses]
+scouts = []
+for compass in compasses:
+    scouts.append(Scout(world.starting_room, world, True, list(compass)))
+    scouts.append(Scout(world.starting_room, world, False, list(compass)))
 for scout in scouts:
     while len(scout.visited) < len(room_graph):
         # Transit continguous unexplored area:

@@ -93,15 +93,13 @@ class Scout:
             self.facing = self.compass.index(shortest)
             self.step_forward()
     def nearest_new(self):
-        # Returns path to nearest unvisited room
-        # Returning path to nearest room with unvisited neighbors increased steps
-        # ...but that may be due to the specifics of this map.
+        # Returns path to nearest room with unvisited neighbor
         checked = set()
         room_deque = deque([[self.room.id, []]])
         while (len(room_deque) > 0):
             this_state = room_deque.popleft()
             if this_state[0] not in self.visited:
-                return this_state[1]
+                return this_state[1][:-1]
             else:
                 room = self.world.rooms[this_state[0]]
                 checked.add(room)
