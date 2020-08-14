@@ -4,17 +4,27 @@ from collections import deque
 # Scout object to explore/traverse map:
 # Takes room object, not room id
 class Scout:
-    def __init__(self, room, world, lefty=True):
+    def __init__(self, room, world, lefty=True, compass=None):
         self.room = room
         self.world = world
         self.lefty = lefty
-        self.compass = ["n", "e", "s", "w"]
-        # facing: [0,1,2,3] = ["n", "e", "s", "w"]
+        if compass is None:
+            self.compass = ["n", "e", "s", "w"]
+        else:
+            self.compass = compass
+        if lefty:
+            ind = [0, 1, 2, 3]
+        else:
+            ind = [0, -1, -2, -3]
+        self.compasses = [[self.compass[(i + j) % 4] for i in ind] for j in ind]
+        self.decision_counter = 0
+        # facing = index of self.compass for current direction
         self.facing = 0
         # visited: set of room IDs
         self.visited = set([room.id])
         # steps: directions moved (e.g. "n", "e")
         self.steps = []
+    # turn_left and turn_right are not strictly left/right turns unless self.compass is a rotation of ["n", "e", "s", "w"]
     def turn_left(self):
         self.facing = (self.facing - 1) % 4
     def turn_right(self):
@@ -70,18 +80,15 @@ class Scout:
                 if self.room.get_room_in_direction(d).id not in self.visited:
                     branches[d] = self.branch_eval(self.room.get_room_in_direction(d))
             shortest = self.compass[self.facing]
-            # Choice among available moves with equal branch size is based on chirality:
-            if self.lefty:
-                turns = [0,1,2]
-            else:
-                turns = [0,-1,-2]
-            for turn in turns:
-                face = self.compass[(self.facing + turn) % 4]
-                if branches[shortest] is not None and branches[face] is not None:
-                    if branches[face] < branches[shortest]:
-                        shortest = face
+            # Choice among available moves with equal branch size is in clockwise compass order:
+            for turn in self.compasses[self.facing]:
+                if branches[shortest] is not None and branches[turn] is not None:
+                    if branches[turn] < branches[shortest]:
+                        shortest = turn
+                    if branches[turn] == branches[shortest] and turn != shortest:
+                        self.decision_counter += 1
                 elif branches[shortest] == None:
-                    shortest = face
+                    shortest = turn
             # Move in direction of shortest branch
             self.facing = self.compass.index(shortest)
             self.step_forward()

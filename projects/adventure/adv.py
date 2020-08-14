@@ -4,7 +4,7 @@ from world import World
 from scout import Scout
 
 import datetime
-import random
+import itertools
 from ast import literal_eval
 
 # Load world
@@ -32,21 +32,25 @@ player = Player(world.starting_room)
 
 traversal_path = []
 
+# print(datetime.datetime.now())
 print(datetime.datetime.now())
-
-scouts = [Scout(world.starting_room, world, i) for i in (True, False)]
+compasses = itertools.permutations(["n", "e", "s", "w"])
+scouts = [Scout(world.starting_room, world, i, list(j)) for i in (True, False) for j in compasses]
 for scout in scouts:
     while len(scout.visited) < len(room_graph):
         # Transit continguous unexplored area:
         scout.automap()
         # Move to nearest unexplored room:
         scout.go_to_new()
-print("L: ", len(scouts[0].steps))
-print("R: ", len(scouts[1].steps))
 traversals = sorted([scout.steps for scout in scouts], key=lambda traversal: len(traversal))
-traversal_path = traversals[0]
+for scout in scouts:
+    print(f"{len(scout.steps)} steps, {''.join(scout.compass)}, {scout.lefty}")
 
 print(datetime.datetime.now())
+
+traversal_path = traversals[0]
+
+# print(datetime.datetime.now())
 
 # TRAVERSAL TEST
 visited_rooms = set()
