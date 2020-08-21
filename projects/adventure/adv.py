@@ -1,8 +1,10 @@
 from room import Room
 from player import Player
 from world import World
+from scout import Scout
 
-import random
+import datetime
+import itertools
 from ast import literal_eval
 
 # Load world
@@ -21,15 +23,37 @@ room_graph=literal_eval(open(map_file, "r").read())
 world.load_graph(room_graph)
 
 # Print an ASCII map
-world.print_rooms()
+# world.print_rooms()
 
 player = Player(world.starting_room)
 
 # Fill this out with directions to walk
 # traversal_path = ['n', 'n']
+
 traversal_path = []
 
+# print(datetime.datetime.now())
+print(datetime.datetime.now())
+compasses = itertools.permutations(["n", "e", "s", "w"])
+scouts = []
+for compass in compasses:
+    scouts.append(Scout(world.starting_room, world, True, list(compass)))
+    scouts.append(Scout(world.starting_room, world, False, list(compass)))
+for scout in scouts:
+    while len(scout.visited) < len(room_graph):
+        # Transit continguous unexplored area:
+        scout.automap()
+        # Move to nearest unexplored room:
+        scout.go_to_new()
+traversals = sorted([scout.steps for scout in scouts], key=lambda traversal: len(traversal))
+for scout in scouts:
+    print(f"{len(scout.steps)} steps, {''.join(scout.compass)}, {scout.lefty}")
 
+print(datetime.datetime.now())
+
+traversal_path = traversals[0]
+
+# print(datetime.datetime.now())
 
 # TRAVERSAL TEST
 visited_rooms = set()
@@ -51,12 +75,12 @@ else:
 #######
 # UNCOMMENT TO WALK AROUND
 #######
-player.current_room.print_room_description(player)
-while True:
-    cmds = input("-> ").lower().split(" ")
-    if cmds[0] in ["n", "s", "e", "w"]:
-        player.travel(cmds[0], True)
-    elif cmds[0] == "q":
-        break
-    else:
-        print("I did not understand that command.")
+# player.current_room.print_room_description(player)
+# while True:
+#     cmds = input("-> ").lower().split(" ")
+#     if cmds[0] in ["n", "s", "e", "w"]:
+#         player.travel(cmds[0], True)
+#     elif cmds[0] == "q":
+#         break
+#     else:
+#         print("I did not understand that command.")

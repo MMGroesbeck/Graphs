@@ -1,3 +1,8 @@
+import random
+import copy
+
+from collections import deque
+
 class User:
     def __init__(self, name):
         self.name = name
@@ -45,9 +50,19 @@ class SocialGraph:
         # !!!! IMPLEMENT ME
 
         # Add users
+        letters = "abcdefghijklmnopqrstuvwxyz"
+        for i in range(num_users):
+            self.add_user("".join(random.sample(letters, 8)))
 
         # Create friendships
-
+        total_friendships = (num_users * avg_friendships)//2
+        user_ids = [i for i in range(1,num_users + 1)]
+        links = [random.choice(user_ids) for i in range(total_friendships)]
+        for link in links:
+            j = random.choice(user_ids)
+            while j == link or j in self.friendships[link]:
+                j = random.choice(user_ids)
+            self.add_friendship(link, j)
     def get_all_social_paths(self, user_id):
         """
         Takes a user's user_id as an argument
@@ -59,6 +74,16 @@ class SocialGraph:
         """
         visited = {}  # Note that this is a dictionary, not a set
         # !!!! IMPLEMENT ME
+        user_deque = deque([[user_id, [user_id]]])
+        while len(user_deque) > 0:
+            this_state = user_deque.popleft()
+            if this_state[0] not in visited:
+                visited[this_state[0]] = this_state[1]
+                for friend in self.friendships[this_state[0]]:
+                    new_state = copy.deepcopy(this_state)
+                    new_state[0] = friend
+                    new_state[1].append(friend)
+                    user_deque.append(new_state)
         return visited
 
 

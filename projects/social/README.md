@@ -48,9 +48,15 @@ Note that in this sample, Users 3, 4 and 9 are not in User 1's extended social n
 
 1. To create 100 users with an average of 10 friends each, how many times would you need to call `add_friendship()`? Why?
 
+Each friendship links 2 users; so for n users with k total friendships, the average friendships per user will be 2k/n; for a average friendships, there will be an/2 total friendships (500 friendships if 100 users with an average of 10 friends).
+
 2. If you create 1000 users with an average of 5 random friends each, what percentage of other users will be in a particular user's extended social network? What is the average degree of separation between a user and those in his/her extended network?
 
+Consider a sequence a(i) where term i is the number of users with a minimum network distance of i from an arbitrary user. The total expected number of users in the extended social network will be the limit of the sum of the sequence as i increases unbounded; but since a(i) refers to *minimum* network distance, terms after a(n-1) will be 0, where n (here 1000) is the total number of users in the network.
 
+Since only the initial user is within 0 steps, a(0) = 1. The expected value for a(1) is k := the average number of friends (here 5). After a(1), a(i+1) will be (k - expected number of existing connections)a(i) * the percentage of users not already in the network; that is, a(i+1) = (4-[(sum(a(j)|j<=i)) / 1000])a(i) [1 - (sum(a(j)|j<=i)) / 1000]
+
+That rough estimate doesn't converge, and it doesn't account for independent connected components; some of those are likely to emerge before everyone's connected.
 
 ## 4. Stretch Goal
 
